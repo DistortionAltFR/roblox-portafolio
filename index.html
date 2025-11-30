@@ -2,14 +2,16 @@
 <html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Luau Architect | Roblox Portfolio</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
         tailwind.config = {
@@ -19,7 +21,7 @@
                         'neon-blue': '#00f3ff',
                         'neon-purple': '#bc13fe',
                         'deep-space': '#050b14',
-                        'panel-bg': 'rgba(10, 15, 30, 0.6)',
+                        'panel-bg': 'rgba(10, 15, 30, 0.85)',
                         'arcade-red': '#ff0055',
                         'arcade-green': '#00ff66'
                     },
@@ -31,20 +33,15 @@
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
                         'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'scanline': 'scanline 8s linear infinite',
                     },
                     keyframes: {
                         float: {
                             '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-20px)' },
-                        },
-                        scanline: {
-                            '0%': { transform: 'translateY(-100%)' },
-                            '100%': { transform: 'translateY(100%)' },
+                            '50%': { transform: 'translateY(-15px)' },
                         }
                     },
                     backgroundImage: {
-                        'cyber-grid': "linear-gradient(to right, rgba(0, 243, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 243, 255, 0.05) 1px, transparent 1px)",
+                        'cyber-grid': "linear-gradient(to right, rgba(0, 243, 255, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 243, 255, 0.03) 1px, transparent 1px)",
                     }
                 }
             }
@@ -56,23 +53,20 @@
             background-color: #050b14;
             color: #e2e8f0;
             overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
         
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #050b14; }
         ::-webkit-scrollbar-thumb { background: #1e3a8a; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: #00f3ff; }
-
-        .text-glow {
-            text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
-        }
+        
+        .text-glow { text-shadow: 0 0 10px rgba(0, 243, 255, 0.4); }
         
         .glass-panel {
-            background: rgba(13, 20, 35, 0.7);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(13, 20, 35, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .tech-card {
@@ -80,39 +74,24 @@
             border: 1px solid rgba(0, 243, 255, 0.1);
             position: relative;
             overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .tech-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.5), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.5s ease;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+            will-change: transform; 
         }
 
         .tech-card:hover {
             border-color: rgba(0, 243, 255, 0.4);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px -10px rgba(0, 243, 255, 0.15);
-        }
-
-        .tech-card:hover::before {
-            transform: translateX(100%);
+            transform: translateY(-4px);
         }
 
         #matrix-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
             z-index: -2;
-            opacity: 0.8; 
+            opacity: 0.6; 
+            pointer-events: none;
         }
 
         .bg-grid {
@@ -130,42 +109,40 @@
         #arcade-view {
             display: none;
             opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.3s ease-in-out;
         }
-
-        #arcade-view.active {
-            display: flex;
-            opacity: 1;
-        }
+        #arcade-view.active { display: flex; opacity: 1; }
 
         .crt-overlay {
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 2px, 3px 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+            background-size: 100% 3px, 3px 100%;
             pointer-events: none;
         }
 
-        .arcade-btn {
-            box-shadow: 4px 4px 0px 0px #005c61;
-        }
-        .arcade-btn:active {
-            box-shadow: 0px 0px 0px 0px #005c61;
-            transform: translate(4px, 4px);
-        }
-
         .cell {
-            background: rgba(0, 243, 255, 0.1);
-            border: 2px solid #00f3ff;
+            background: rgba(0, 243, 255, 0.05);
+            border: 1px solid #00f3ff;
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Press Start 2P', cursive;
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            text-shadow: 0 0 10px currentColor;
+            user-select: none;
         }
         
-        .cell.x { color: #00f3ff; }
-        .cell.o { color: #ff0055; }
+        .cell.x { color: #00f3ff; text-shadow: 0 0 5px #00f3ff; }
+        .cell.o { color: #ff0055; text-shadow: 0 0 5px #ff0055; }
+
+        .hero-glow {
+            background: radial-gradient(circle at center, rgba(0, 243, 255, 0.15) 0%, transparent 70%);
+        }
+
+        .game-btn {
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
     </style>
 </head>
 <body class="antialiased selection:bg-neon-blue selection:text-black">
@@ -175,7 +152,7 @@
     <div class="fixed inset-0 z-[-1] bg-cyber-grid bg-grid pointer-events-none"></div>
     <div class="fixed inset-0 z-[-1] bg-gradient-to-t from-[#050b14] via-transparent to-[#050b14] pointer-events-none"></div>
 
-    <div id="notification" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-6 py-4 bg-[#0a1525] border border-neon-blue/50 text-white rounded-lg shadow-[0_0_30px_rgba(0,243,255,0.2)] transition-all duration-300 opacity-0 translate-y-10 pointer-events-none w-[90%] md:w-auto backdrop-blur-md">
+    <div id="notification" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-6 py-4 bg-[#0a1525] border border-neon-blue/50 text-white rounded-lg shadow-lg transition-all duration-300 opacity-0 translate-y-10 pointer-events-none w-[90%] md:w-auto backdrop-blur-md">
         <i class="ph-fill ph-check-circle text-neon-blue text-xl"></i>
         <div>
             <h4 class="font-bold font-mono text-sm text-neon-blue tracking-wider">SUCCESS</h4>
@@ -183,12 +160,12 @@
         </div>
     </div>
 
-    <div id="main-view" class="transition-all duration-500">
-        <nav class="fixed w-full z-50 top-0 left-0 border-b border-white/5 glass-panel h-20">
+    <div id="main-view" class="transition-all duration-300">
+        <nav class="fixed w-full z-50 top-0 left-0 border-b border-white/5 glass-panel h-16 md:h-20">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
                 <div class="flex items-center justify-between h-full">
                     <div class="flex-shrink-0 cursor-pointer group" onclick="window.scrollTo(0,0)">
-                        <span class="font-mono text-2xl font-bold text-white tracking-tighter group-hover:text-neon-blue transition-colors duration-300">
+                        <span class="font-mono text-xl md:text-2xl font-bold text-white tracking-tighter group-hover:text-neon-blue transition-colors duration-300">
                             &lt;<span class="text-neon-blue group-hover:text-white transition-colors duration-300">Dev</span>/&gt;
                         </span>
                     </div>
@@ -198,74 +175,74 @@
                             <a href="#home" class="text-gray-300 hover:text-neon-blue transition-colors duration-300">_HOME</a>
                             <a href="#about" class="text-gray-300 hover:text-neon-blue transition-colors duration-300">_STATS</a>
                             <a href="#expertise" class="text-gray-300 hover:text-neon-blue transition-colors duration-300">_MODULES</a>
-                            <a href="#contact" class="px-6 py-2 rounded-sm border border-neon-blue text-neon-blue bg-neon-blue/5 hover:bg-neon-blue hover:text-black hover:shadow-[0_0_20px_rgba(0,243,255,0.4)] transition-all duration-300 font-bold uppercase tracking-wide">
+                            <a href="#contact" class="px-6 py-2 rounded-sm border border-neon-blue text-neon-blue bg-neon-blue/5 hover:bg-neon-blue hover:text-black transition-all duration-300 font-bold uppercase tracking-wide">
                                 Execute()
                             </a>
                         </div>
                     </div>
 
                     <div class="md:hidden">
-                        <button id="mobile-menu-btn" class="text-white hover:text-neon-blue focus:outline-none transition-colors p-2">
-                            <i id="menu-icon" class="ph ph-list text-3xl"></i>
+                        <button id="mobile-menu-btn" class="text-white hover:text-neon-blue focus:outline-none p-2">
+                            <i id="menu-icon" class="ph ph-list text-2xl"></i>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div id="mobile-menu" class="hidden md:hidden fixed inset-0 top-20 bg-[#050b14]/95 backdrop-blur-xl z-40 flex flex-col items-center justify-center space-y-8 h-[calc(100vh-80px)] border-t border-white/10 transition-all">
-                <a href="#home" class="text-2xl font-mono text-white hover:text-neon-blue transition-colors" onclick="toggleMenu()">_HOME</a>
-                <a href="#about" class="text-2xl font-mono text-white hover:text-neon-blue transition-colors" onclick="toggleMenu()">_STATS</a>
-                <a href="#expertise" class="text-2xl font-mono text-white hover:text-neon-blue transition-colors" onclick="toggleMenu()">_MODULES</a>
-                <a href="#contact" class="mt-8 px-10 py-4 rounded border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black font-bold text-xl transition-all shadow-[0_0_20px_rgba(0,243,255,0.2)]" onclick="toggleMenu()">Execute()</a>
+            <div id="mobile-menu" class="hidden md:hidden fixed inset-0 top-16 bg-[#050b14] z-40 flex flex-col items-center justify-center space-y-8 h-[calc(100vh-64px)] border-t border-white/10">
+                <a href="#home" class="text-xl font-mono text-white hover:text-neon-blue" onclick="toggleMenu()">_HOME</a>
+                <a href="#about" class="text-xl font-mono text-white hover:text-neon-blue" onclick="toggleMenu()">_STATS</a>
+                <a href="#expertise" class="text-xl font-mono text-white hover:text-neon-blue" onclick="toggleMenu()">_MODULES</a>
+                <a href="#contact" class="mt-8 px-10 py-4 rounded border border-neon-blue text-neon-blue hover:bg-neon-blue hover:text-black font-bold text-lg" onclick="toggleMenu()">Execute()</a>
             </div>
         </nav>
 
-        <section id="home" class="min-h-screen flex items-center justify-center relative pt-24 md:pt-0 overflow-hidden">
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-neon-blue/10 rounded-full blur-[100px] pointer-events-none z-0"></div>
+        <section id="home" class="min-h-screen flex items-center justify-center relative pt-20 overflow-hidden">
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] hero-glow pointer-events-none z-0"></div>
 
-            <div class="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center relative z-10 w-full">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center relative z-10 w-full gap-10 md:gap-0">
                 
-                <div class="md:w-1/2 text-center md:text-left mb-12 md:mb-0">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 mb-8 text-xs font-mono text-neon-blue border border-neon-blue/30 rounded bg-neon-blue/5 backdrop-blur-sm">
+                <div class="md:w-1/2 text-center md:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 mb-6 md:mb-8 text-xs font-mono text-neon-blue border border-neon-blue/30 rounded bg-neon-blue/5">
                         <span class="w-2 h-2 rounded-full bg-neon-blue animate-pulse"></span>
                         SYSTEM ONLINE // V 2.0
                     </div>
                     
-                    <h1 class="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight mb-6 leading-[1.1]">
+                    <h1 class="text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-tight mb-6 leading-tight">
                         SCALING <br>
                         <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-neon-blue to-blue-600 text-glow">VIRTUAL WORLDS</span>
                     </h1>
                     
-                    <p class="text-base md:text-lg text-gray-400 mb-10 max-w-lg mx-auto md:mx-0 font-light leading-relaxed">
+                    <p class="text-sm md:text-lg text-gray-400 mb-8 max-w-lg mx-auto md:mx-0 font-light leading-relaxed">
                         Roblox Backend Architect specializing in high-performance systems.<br class="hidden md:block">
-                        <span class="text-neon-blue font-mono">> </span> <span id="typewriter" class="text-white font-mono border-b-2 border-neon-blue"></span>
+                        <span class="text-neon-blue font-mono">> </span> <span id="typewriter" class="text-white font-mono border-b-2 border-neon-blue h-[24px] inline-block align-bottom"></span>
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start w-full max-w-sm mx-auto md:max-w-none">
-                        <a href="#expertise" class="relative px-8 py-4 bg-neon-blue text-black font-bold font-mono rounded-sm hover:bg-white transition-all duration-300 overflow-hidden text-center shadow-[0_0_25px_rgba(0,243,255,0.3)] hover:shadow-[0_0_40px_rgba(0,243,255,0.5)] group">
+                        <a href="#expertise" class="relative px-8 py-3 bg-neon-blue text-black font-bold font-mono rounded-sm hover:bg-white transition-all duration-300 text-center group">
                             <span class="relative z-10 flex items-center justify-center gap-2">VIEW SPECS <i class="ph-bold ph-arrow-right group-hover:translate-x-1 transition-transform"></i></span>
                         </a>
-                        <a href="#contact" class="px-8 py-4 border border-white/10 hover:border-neon-blue text-white font-mono rounded-sm transition-all duration-300 flex items-center justify-center gap-2 hover:bg-white/5 backdrop-blur-sm">
+                        <a href="#contact" class="px-8 py-3 border border-white/10 hover:border-neon-blue text-white font-mono rounded-sm transition-all duration-300 flex items-center justify-center gap-2 hover:bg-white/5">
                             <i class="ph ph-paper-plane-tilt"></i> CONTACT
                         </a>
                     </div>
                 </div>
 
-                <div class="md:w-1/2 flex justify-center w-full animate-float px-4">
-                    <div class="glass-panel p-2 rounded-xl w-full max-w-[450px] transform rotate-1 hover:rotate-0 transition-transform duration-500 shadow-2xl shadow-black/50 border border-white/10">
+                <div class="md:w-1/2 flex justify-center w-full animate-float px-2">
+                    <div class="glass-panel p-2 rounded-xl w-full max-w-[450px] transform rotate-1 hover:rotate-0 transition-transform duration-500 border border-white/10 bg-[#0a101e]">
                         <div class="bg-[#0e1525] rounded-lg overflow-hidden border border-white/5">
                             <div class="flex items-center gap-2 px-4 py-3 bg-[#0a101e] border-b border-white/5">
                                 <div class="flex gap-1.5">
-                                    <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
-                                    <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
-                                    <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#ff5f56]"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#ffbd2e]"></div>
+                                    <div class="w-2.5 h-2.5 rounded-full bg-[#27c93f]"></div>
                                 </div>
                                 <span class="ml-auto font-mono text-[10px] text-gray-500 flex items-center gap-1">
                                     <i class="ph-fill ph-lock-key"></i> ROBLOX_STUDIO
                                 </span>
                             </div>
-                            <div class="p-4 sm:p-6 overflow-x-auto">
-<pre class="font-mono text-[11px] sm:text-xs text-gray-300 leading-relaxed">
+                            <div class="p-3 sm:p-5 overflow-x-auto">
+<pre class="font-mono text-[10px] sm:text-xs text-gray-300 leading-relaxed">
 <span class="code-comment">-- Defines strict data handling architecture</span>
 <span class="code-kw">local</span> DataStore = <span class="code-fn">game</span>:GetService(<span class="code-str">"DataStoreService"</span>)
 <span class="code-kw">local</span> Profile = {}
@@ -278,11 +255,10 @@ Profile.__index = Profile
     self._session_id = <span class="code-fn">HttpService</span>:GenerateGUID(<span class="code-kw">false</span>)
     self._data = {
         Credits = <span class="code-num">0</span>,
-        Exp = <span class="code-num">0</span>,
         Inventory = {} <span class="code-comment">-- Serialized</span>
     }
     
-    <span class="code-fn">print</span>(<span class="code-str">"Session initialized for: "</span> .. player.Name)
+    <span class="code-fn">print</span>(<span class="code-str">"Session initialized: "</span> .. player.Name)
     <span class="code-kw">return</span> self
 <span class="code-kw">end</span>
 
@@ -295,115 +271,115 @@ Profile.__index = Profile
         </section>
 
         <section id="about" class="py-12 relative z-10">
-            <div class="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-                    <div class="tech-card p-6 rounded text-center group">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="tech-card p-4 md:p-6 rounded text-center group">
                         <div class="mb-3 flex justify-center">
                             <i class="ph ph-clock text-3xl md:text-4xl text-neon-blue opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all"></i>
                         </div>
-                        <h3 class="text-2xl md:text-3xl font-bold text-white tracking-tight">4+</h3>
-                        <p class="text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Years Experience</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-white">4+</h3>
+                        <p class="text-[10px] md:text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Years Experience</p>
                     </div>
 
-                    <div class="tech-card p-6 rounded text-center group">
+                    <div class="tech-card p-4 md:p-6 rounded text-center group">
                         <div class="mb-3 flex justify-center">
                             <i class="ph ph-check-circle text-3xl md:text-4xl text-neon-blue opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all"></i>
                         </div>
-                        <h3 class="text-2xl md:text-3xl font-bold text-white tracking-tight">100%</h3>
-                        <p class="text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Clean Code</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-white">100%</h3>
+                        <p class="text-[10px] md:text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Clean Code</p>
                     </div>
 
-                    <div class="tech-card p-6 rounded text-center group">
+                    <div class="tech-card p-4 md:p-6 rounded text-center group">
                         <div class="mb-3 flex justify-center">
                             <i class="ph ph-shield-check text-3xl md:text-4xl text-neon-blue opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all"></i>
                         </div>
-                        <h3 class="text-2xl md:text-3xl font-bold text-white tracking-tight">SAFE</h3>
-                        <p class="text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Data Handling</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-white">SAFE</h3>
+                        <p class="text-[10px] md:text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Data Handling</p>
                     </div>
 
-                    <div class="tech-card p-6 rounded text-center group">
+                    <div class="tech-card p-4 md:p-6 rounded text-center group">
                         <div class="mb-3 flex justify-center">
                             <i class="ph ph-lightning text-3xl md:text-4xl text-neon-blue opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all"></i>
                         </div>
-                        <h3 class="text-2xl md:text-3xl font-bold text-white tracking-tight">FAST</h3>
-                        <p class="text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Optimization</p>
+                        <h3 class="text-2xl md:text-3xl font-bold text-white">FAST</h3>
+                        <p class="text-[10px] md:text-xs font-mono text-gray-400 mt-1 uppercase tracking-wider">Optimization</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="expertise" class="py-24 relative z-10">
-            <div class="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8">
-                <div class="mb-16 md:text-center">
+        <section id="expertise" class="py-20 relative z-10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 md:text-center">
                     <span class="text-neon-blue font-mono text-xs tracking-[0.2em] uppercase mb-2 block">My Modules</span>
                     <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">SYSTEM ARCHITECTURE</h2>
                     <div class="h-0.5 w-24 bg-gradient-to-r from-neon-blue to-transparent md:mx-auto"></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <div class="tech-card p-8 rounded-xl group hover:bg-[#0d1829] transition-colors">
-                        <div class="w-14 h-14 bg-neon-blue/5 border border-neon-blue/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-neon-blue group-hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(0,243,255,0.1)] group-hover:shadow-[0_0_20px_rgba(0,243,255,0.4)]">
-                            <i class="ph ph-brackets-curly text-3xl text-neon-blue group-hover:text-black transition-colors"></i>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="tech-card p-6 md:p-8 rounded-xl group hover:bg-[#0d1829]">
+                        <div class="w-12 h-12 bg-neon-blue/5 border border-neon-blue/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-neon-blue group-hover:text-black transition-all duration-300">
+                            <i class="ph ph-brackets-curly text-2xl text-neon-blue group-hover:text-black"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-4 font-mono group-hover:text-neon-blue transition-colors">OOP & Metatables</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed border-l-2 border-white/5 pl-4 group-hover:border-neon-blue/50 transition-colors">
-                            Modular classes with memory-efficient inheritance patterns. Creating reusable systems that scale without spaghetti code.
+                        <h3 class="text-lg font-bold text-white mb-3 font-mono group-hover:text-neon-blue">OOP & Metatables</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed border-l-2 border-white/5 pl-4">
+                            Modular classes with memory-efficient inheritance patterns. Reusable systems that scale.
                         </p>
                     </div>
 
-                    <div class="tech-card p-8 rounded-xl group hover:bg-[#0d1829] transition-colors">
-                        <div class="w-14 h-14 bg-neon-blue/5 border border-neon-blue/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-neon-blue group-hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(0,243,255,0.1)] group-hover:shadow-[0_0_20px_rgba(0,243,255,0.4)]">
-                            <i class="ph ph-database text-3xl text-neon-blue group-hover:text-black transition-colors"></i>
+                    <div class="tech-card p-6 md:p-8 rounded-xl group hover:bg-[#0d1829]">
+                        <div class="w-12 h-12 bg-neon-blue/5 border border-neon-blue/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-neon-blue group-hover:text-black transition-all duration-300">
+                            <i class="ph ph-database text-2xl text-neon-blue group-hover:text-black"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-4 font-mono group-hover:text-neon-blue transition-colors">DataStore Systems</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed border-l-2 border-white/5 pl-4 group-hover:border-neon-blue/50 transition-colors">
-                            Session locking, auto-saving, and data versioning. Utilizing ProfileService for robust, loss-prevention data handling.
+                        <h3 class="text-lg font-bold text-white mb-3 font-mono group-hover:text-neon-blue">DataStore Systems</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed border-l-2 border-white/5 pl-4">
+                            Session locking, auto-saving, and data versioning. Utilizing ProfileService for loss-prevention.
                         </p>
                     </div>
 
-                    <div class="tech-card p-8 rounded-xl group hover:bg-[#0d1829] transition-colors">
-                        <div class="w-14 h-14 bg-neon-blue/5 border border-neon-blue/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-neon-blue group-hover:text-black transition-all duration-300 shadow-[0_0_15px_rgba(0,243,255,0.1)] group-hover:shadow-[0_0_20px_rgba(0,243,255,0.4)]">
-                            <i class="ph ph-network text-3xl text-neon-blue group-hover:text-black transition-colors"></i>
+                    <div class="tech-card p-6 md:p-8 rounded-xl group hover:bg-[#0d1829]">
+                        <div class="w-12 h-12 bg-neon-blue/5 border border-neon-blue/20 rounded-lg flex items-center justify-center mb-6 group-hover:bg-neon-blue group-hover:text-black transition-all duration-300">
+                            <i class="ph ph-network text-2xl text-neon-blue group-hover:text-black"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-white mb-4 font-mono group-hover:text-neon-blue transition-colors">Networking</h3>
-                        <p class="text-gray-400 text-sm leading-relaxed border-l-2 border-white/5 pl-4 group-hover:border-neon-blue/50 transition-colors">
-                            Optimized RemoteEvent usage. Byte compression where necessary and secure server-side validation to prevent exploiting.
+                        <h3 class="text-lg font-bold text-white mb-3 font-mono group-hover:text-neon-blue">Networking</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed border-l-2 border-white/5 pl-4">
+                            Optimized RemoteEvent usage. Byte compression and secure server-side validation.
                         </p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="py-24 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-sm">
-            <div class="max-w-3xl mx-auto px-6 text-center">
+        <section id="contact" class="py-20 relative z-10 border-t border-white/5 bg-black/40 backdrop-blur-sm">
+            <div class="max-w-3xl mx-auto px-4 text-center">
                 <div class="inline-block p-2 rounded-full border border-neon-blue/20 bg-neon-blue/5 mb-6">
                     <i class="ph-fill ph-wifi-high text-neon-blue animate-pulse"></i>
                 </div>
                 <h2 class="text-3xl md:text-4xl font-bold text-white mb-6 tracking-wide">INITIATE CONNECTION</h2>
-                <p class="text-gray-400 mb-12 text-sm md:text-base max-w-lg mx-auto">
+                <p class="text-gray-400 mb-10 text-sm md:text-base max-w-lg mx-auto">
                     Ready to optimize your next project? I am available for commissions and long-term contracts.
                 </p>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
-                    <div class="tech-card p-5 rounded flex items-center justify-between cursor-pointer hover:bg-white/5 transition-all group" onclick="copyToClipboard('the3333_e', 'Discord ID')">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
+                    <div class="tech-card p-4 rounded flex items-center justify-between cursor-pointer hover:bg-white/5 transition-all group" onclick="copyToClipboard('the3333_e', 'Discord ID')">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded bg-[#5865F2]/20 flex items-center justify-center text-[#5865F2]">
+                            <div class="w-10 h-10 rounded bg-[#5865F2]/20 flex items-center justify-center text-[#5865F2] flex-shrink-0">
                                 <i class="ph-fill ph-discord-logo text-xl"></i>
                             </div>
-                            <div>
+                            <div class="min-w-0">
                                 <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wider mb-1">DISCORD</p>
-                                <span class="text-white font-mono text-lg font-bold group-hover:text-[#5865F2] transition-colors">the3333_e</span>
+                                <span class="text-white font-mono text-base font-bold group-hover:text-[#5865F2] transition-colors truncate block">the3333_e</span>
                             </div>
                         </div>
                         <i class="ph ph-copy text-gray-500 group-hover:text-white transition-colors"></i>
                     </div>
 
-                    <div class="tech-card p-5 rounded flex items-center justify-between cursor-pointer hover:bg-white/5 transition-all group" onclick="copyToClipboard('sebastian99812@outlook.com', 'Email')">
+                    <div class="tech-card p-4 rounded flex items-center justify-between cursor-pointer hover:bg-white/5 transition-all group" onclick="copyToClipboard('sebastian99812@outlook.com', 'Email')">
                         <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded bg-neon-blue/20 flex items-center justify-center text-neon-blue">
+                            <div class="w-10 h-10 rounded bg-neon-blue/20 flex items-center justify-center text-neon-blue flex-shrink-0">
                                 <i class="ph-fill ph-envelope-simple text-xl"></i>
                             </div>
-                            <div class="overflow-hidden">
+                            <div class="min-w-0 flex-1">
                                 <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wider mb-1">EMAIL</p>
                                 <span class="text-white font-mono text-sm font-bold truncate block group-hover:text-neon-blue transition-colors">sebastian99812@outlook.com</span>
                             </div>
@@ -412,7 +388,7 @@ Profile.__index = Profile
                     </div>
                 </div>
 
-                <div class="mt-20 border-t border-white/5 pt-8 text-center">
+                <div class="mt-16 border-t border-white/5 pt-8 text-center">
                     <button onclick="toggleArcade()" class="group relative px-6 py-2 bg-transparent overflow-hidden rounded text-neon-blue font-mono text-xs tracking-[0.3em] hover:text-white transition-colors duration-300">
                         <span class="absolute inset-0 w-0 bg-neon-blue transition-all duration-[250ms] ease-out group-hover:w-full opacity-10"></span>
                         SYSTEM CORE // ACCESS
@@ -425,52 +401,53 @@ Profile.__index = Profile
     <div id="arcade-view" class="fixed inset-0 z-[200] bg-black flex flex-col overflow-y-auto">
         <div class="crt-overlay fixed inset-0 z-50 pointer-events-none"></div>
         
-        <div class="fixed top-0 left-0 w-full p-6 z-40 flex justify-between items-center bg-black/80 backdrop-blur-sm border-b border-neon-blue/20">
-            <button onclick="toggleArcade()" class="text-white hover:text-neon-blue font-arcade text-xs flex items-center gap-2">
-                <i class="ph-bold ph-arrow-left"></i> EXIT SYSTEM
+        <div class="fixed top-0 left-0 w-full p-4 md:p-6 z-40 flex justify-between items-center bg-black/80 backdrop-blur-sm border-b border-neon-blue/20">
+            <button onclick="toggleArcade()" class="text-white hover:text-neon-blue font-arcade text-[10px] md:text-xs flex items-center gap-2">
+                <i class="ph-bold ph-arrow-left"></i> EXIT
             </button>
             <div class="text-right">
-                <div class="text-[10px] text-neon-blue font-mono mb-1">SYSTEM TIME (GMT-5)</div>
-                <div id="gmt-clock" class="text-xl md:text-3xl font-arcade text-white text-glow tracking-widest">00:00:00</div>
+                <div class="text-[8px] md:text-[10px] text-neon-blue font-mono mb-1">SYSTEM TIME (GMT-5)</div>
+                <div id="gmt-clock" class="text-lg md:text-2xl font-arcade text-white text-glow tracking-widest">00:00:00</div>
             </div>
         </div>
 
-        <div class="flex-1 flex flex-col items-center justify-center p-6 mt-20 gap-12">
+        <div class="flex-1 flex flex-col items-center justify-start md:justify-center p-4 mt-20 gap-12 pb-20">
             
-            <div class="w-full max-w-md">
-                <div class="text-center mb-6">
-                    <h2 class="font-arcade text-xl text-neon-blue mb-2 text-glow">TIC-TAC-TOE</h2>
-                    <p class="font-mono text-xs text-gray-500">OPPONENT: MINIMAX BOT (UNBEATABLE)</p>
+            <div class="w-full max-w-xs">
+                <div class="text-center mb-4">
+                    <h2 class="font-arcade text-sm text-neon-blue mb-1 text-glow">TIC-TAC-TOE</h2>
+                    <p class="font-mono text-[10px] text-gray-500">OPPONENT: MINIMAX AI</p>
                 </div>
-                <div class="aspect-square bg-black/50 border-2 border-neon-blue/30 rounded-lg p-4 grid grid-cols-3 gap-2 shadow-[0_0_30px_rgba(0,243,255,0.1)]" id="ttt-board">
+                <div class="aspect-square bg-black/50 border border-neon-blue/30 rounded-lg p-2 grid grid-cols-3 gap-1 shadow-[0_0_15px_rgba(0,243,255,0.1)]" id="ttt-board">
                 </div>
                 <div class="mt-4 text-center h-8">
-                    <p id="ttt-status" class="font-arcade text-xs text-white"></p>
-                    <button id="ttt-reset" class="hidden mt-2 px-4 py-2 bg-neon-blue text-black font-arcade text-[10px] hover:bg-white arcade-btn" onclick="resetTTT()">RESTART</button>
+                    <p id="ttt-status" class="font-arcade text-[10px] text-white"></p>
+                    <button id="ttt-reset" class="hidden mt-2 px-3 py-1 bg-neon-blue text-black font-arcade text-[10px] hover:bg-white" onclick="resetTTT()">RESTART</button>
                 </div>
             </div>
 
-            <div class="w-full max-w-md">
-                <div class="text-center mb-6">
-                    <h2 class="font-arcade text-xl text-arcade-green mb-2 text-glow">SNAKE_OS</h2>
-                    <p class="font-mono text-xs text-gray-500">USE ARROW KEYS OR BUTTONS</p>
+            <div class="w-full max-w-xs">
+                <div class="text-center mb-4">
+                    <h2 class="font-arcade text-sm text-arcade-green mb-1 text-glow">SNAKE_OS</h2>
+                    <p class="font-mono text-[10px] text-gray-500">BUFFERED INPUT SYSTEM</p>
                 </div>
                 <div class="relative">
-                    <canvas id="snake-game" width="300" height="300" class="bg-black border-2 border-arcade-green/30 rounded-lg shadow-[0_0_30px_rgba(0,255,102,0.1)] mx-auto block"></canvas>
-                    <div id="snake-overlay" class="absolute inset-0 flex items-center justify-center bg-black/80 flex-col gap-4">
-                        <div class="font-arcade text-arcade-green text-sm">SCORE: <span id="snake-score-display">0</span></div>
-                        <button onclick="startSnake()" class="px-6 py-3 bg-arcade-green text-black font-arcade text-xs arcade-btn hover:bg-white hover:scale-105 transition-transform">START GAME</button>
+                    <canvas id="snake-game" width="300" height="300" class="bg-black border border-arcade-green/30 rounded-lg shadow-[0_0_15px_rgba(0,255,102,0.1)] mx-auto block w-full"></canvas>
+                    <div id="snake-overlay" class="absolute inset-0 flex items-center justify-center bg-black/80 flex-col gap-4 z-10">
+                        <div class="font-arcade text-arcade-green text-xs">SCORE: <span id="snake-score-display">0</span></div>
+                        <button onclick="startSnake()" class="px-4 py-2 bg-arcade-green text-black font-arcade text-[10px] hover:bg-white hover:scale-105 transition-transform">START GAME</button>
                     </div>
                 </div>
                 
-                <div class="grid grid-cols-3 gap-2 max-w-[200px] mx-auto mt-6 md:hidden">
+                <div class="grid grid-cols-3 gap-2 max-w-[180px] mx-auto mt-6 md:hidden select-none">
                     <div></div>
-                    <button class="bg-gray-800 p-4 rounded active:bg-arcade-green" onclick="handleMobileControl('ArrowUp')"><i class="ph-bold ph-arrow-up text-white"></i></button>
+                    <button class="game-btn bg-gray-800/80 p-4 rounded active:bg-arcade-green/50 flex items-center justify-center" ontouchstart="handleMobileControl('ArrowUp', event)" onmousedown="handleMobileControl('ArrowUp', event)"><i class="ph-bold ph-arrow-up text-white"></i></button>
                     <div></div>
-                    <button class="bg-gray-800 p-4 rounded active:bg-arcade-green" onclick="handleMobileControl('ArrowLeft')"><i class="ph-bold ph-arrow-left text-white"></i></button>
-                    <button class="bg-gray-800 p-4 rounded active:bg-arcade-green" onclick="handleMobileControl('ArrowDown')"><i class="ph-bold ph-arrow-down text-white"></i></button>
-                    <button class="bg-gray-800 p-4 rounded active:bg-arcade-green" onclick="handleMobileControl('ArrowRight')"><i class="ph-bold ph-arrow-right text-white"></i></button>
+                    <button class="game-btn bg-gray-800/80 p-4 rounded active:bg-arcade-green/50 flex items-center justify-center" ontouchstart="handleMobileControl('ArrowLeft', event)" onmousedown="handleMobileControl('ArrowLeft', event)"><i class="ph-bold ph-arrow-left text-white"></i></button>
+                    <button class="game-btn bg-gray-800/80 p-4 rounded active:bg-arcade-green/50 flex items-center justify-center" ontouchstart="handleMobileControl('ArrowDown', event)" onmousedown="handleMobileControl('ArrowDown', event)"><i class="ph-bold ph-arrow-down text-white"></i></button>
+                    <button class="game-btn bg-gray-800/80 p-4 rounded active:bg-arcade-green/50 flex items-center justify-center" ontouchstart="handleMobileControl('ArrowRight', event)" onmousedown="handleMobileControl('ArrowRight', event)"><i class="ph-bold ph-arrow-right text-white"></i></button>
                 </div>
+                <p class="md:hidden text-center text-[8px] text-gray-600 mt-2 font-mono">TAP TO MOVE</p>
             </div>
 
         </div>
@@ -478,53 +455,65 @@ Profile.__index = Profile
 
     <script>
         const canvas = document.getElementById('matrix-canvas');
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext('2d', { alpha: false });
+        
         let width, height;
-
-        function resize() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
-
-        const chars = '01XYZ<>_[]AB'; 
         const fontSize = 14;
         let drops = [];
+        const chars = '01XYZ<>_[]AB'; 
+        let lastFrameTime = 0;
+        const fpsInterval = 1000 / 30; 
 
         function initMatrix() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
             const columns = Math.ceil(width / fontSize);
             drops = new Array(columns).fill(1);
+            ctx.fillStyle = '#050b14';
+            ctx.fillRect(0, 0, width, height);
         }
 
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(initMatrix, 200);
+        });
         initMatrix();
-        window.addEventListener('resize', initMatrix);
 
-        function draw() {
-            ctx.fillStyle = 'rgba(5, 11, 20, 0.15)'; 
+        function draw(currentTime) {
+            requestAnimationFrame(draw);
+
+            // Frame throttling
+            const elapsed = currentTime - lastFrameTime;
+            if (elapsed < fpsInterval) return;
+            lastFrameTime = currentTime - (elapsed % fpsInterval);
+
+            ctx.fillStyle = 'rgba(5, 11, 20, 0.2)'; 
             ctx.fillRect(0, 0, width, height);
 
             ctx.font = fontSize + 'px JetBrains Mono';
             
             for (let i = 0; i < drops.length; i++) {
-                const text = chars[Math.floor(Math.random() * chars.length)];
-                
-                if(Math.random() > 0.98) {
-                    ctx.fillStyle = '#fff'; 
-                } else {
-                    ctx.fillStyle = '#00b8e6'; 
-                }
+                if(Math.random() > 0.5) { 
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    
+                    if(Math.random() > 0.98) {
+                        ctx.fillStyle = '#fff'; 
+                    } else {
+                        ctx.fillStyle = '#00b8e6'; 
+                    }
 
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-                if (drops[i] * fontSize > height && Math.random() > 0.975) {
-                    drops[i] = 0;
+                    if (drops[i] * fontSize > height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
                 }
-                drops[i]++;
             }
-            requestAnimationFrame(draw);
         }
-        draw();
+        requestAnimationFrame(draw);
+
 
         const mobileMenu = document.getElementById('mobile-menu');
         const menuBtn = document.getElementById('mobile-menu-btn');
@@ -554,9 +543,7 @@ Profile.__index = Profile
         function copyToClipboard(text, label) {
             navigator.clipboard.writeText(text).then(() => {
                 showNotification(label);
-            }).catch(err => {
-                console.error('Failed to copy', err);
-            });
+            }).catch(err => console.error('Failed to copy', err));
         }
 
         function showNotification(label) {
@@ -572,26 +559,26 @@ Profile.__index = Profile
         }
 
         const words = ["OOP ARCHITECTURE", "DATA SAFETY", "MODULAR SYSTEMS"];
-        let i = 0;
-
+        let wordIndex = 0;
+        
         function typeWriter() {
             const element = document.getElementById("typewriter");
             if(!element) return;
-            const word = words[i];
-            let c = 0;
+            const word = words[wordIndex];
+            let charIndex = 0;
 
             const typeInterval = setInterval(() => {
-                element.innerText = word.substring(0, c + 1);
-                c++;
-                if (c === word.length) {
+                element.innerText = word.substring(0, charIndex + 1);
+                charIndex++;
+                if (charIndex === word.length) {
                     clearInterval(typeInterval);
                     setTimeout(() => {
                         const deleteInterval = setInterval(() => {
-                            element.innerText = word.substring(0, c);
-                            c--;
-                            if (c < 0) {
+                            element.innerText = word.substring(0, charIndex);
+                            charIndex--;
+                            if (charIndex < 0) {
                                 clearInterval(deleteInterval);
-                                i = (i + 1) % words.length;
+                                wordIndex = (wordIndex + 1) % words.length;
                                 typeWriter();
                             }
                         }, 50);
@@ -599,19 +586,13 @@ Profile.__index = Profile
                 }
             }, 100);
         }
-        
         window.onload = typeWriter;
 
         function updateClock() {
             const now = new Date();
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const gmt5Time = new Date(utc - (3600000 * 5));
-            
-            const hours = String(gmt5Time.getHours()).padStart(2, '0');
-            const minutes = String(gmt5Time.getMinutes()).padStart(2, '0');
-            const seconds = String(gmt5Time.getSeconds()).padStart(2, '0');
-            
-            document.getElementById('gmt-clock').innerText = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('gmt-clock').innerText = gmt5Time.toLocaleTimeString('en-US', {hour12: false});
         }
         setInterval(updateClock, 1000);
         updateClock();
@@ -622,14 +603,14 @@ Profile.__index = Profile
             
             if (arcade.classList.contains('active')) {
                 arcade.classList.remove('active');
-                setTimeout(() => arcade.style.display = 'none', 500);
+                setTimeout(() => arcade.style.display = 'none', 300);
                 main.style.display = 'block';
                 setTimeout(() => main.style.opacity = '1', 10);
                 document.body.style.overflow = '';
                 stopSnake();
             } else {
                 main.style.opacity = '0';
-                setTimeout(() => main.style.display = 'none', 500);
+                setTimeout(() => main.style.display = 'none', 300);
                 arcade.style.display = 'flex';
                 setTimeout(() => arcade.classList.add('active'), 10);
                 document.body.style.overflow = 'hidden';
@@ -637,27 +618,21 @@ Profile.__index = Profile
             }
         }
 
-        let board = ['', '', '', '', '', '', '', '', ''];
+        let board = Array(9).fill('');
         let gameActive = true;
-        const player = 'X';
-        const ai = 'O';
-        const winConditions = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8],
-            [0, 3, 6], [1, 4, 7], [2, 5, 8],
-            [0, 4, 8], [2, 4, 6]
-        ];
+        const player = 'X', ai = 'O';
 
         function initTTT() {
             const boardEl = document.getElementById('ttt-board');
             boardEl.innerHTML = '';
-            board = ['', '', '', '', '', '', '', '', ''];
+            board = Array(9).fill('');
             gameActive = true;
             document.getElementById('ttt-status').innerText = 'YOUR TURN (X)';
             document.getElementById('ttt-reset').classList.add('hidden');
 
             for (let i = 0; i < 9; i++) {
                 const cell = document.createElement('div');
-                cell.classList.add('cell');
+                cell.className = 'cell';
                 cell.dataset.index = i;
                 cell.addEventListener('click', handleCellClick);
                 boardEl.appendChild(cell);
@@ -667,18 +642,11 @@ Profile.__index = Profile
         function handleCellClick(e) {
             const index = e.target.dataset.index;
             if (board[index] !== '' || !gameActive) return;
-
             makeMove(index, player);
-            if (checkWin(board, player)) {
-                endGame('YOU WON!'); 
-                return;
-            }
-            if (board.includes('')) {
-                document.getElementById('ttt-status').innerText = 'AI THINKING...';
+            if (!checkGameEnd(player)) {
                 gameActive = false;
-                setTimeout(aiMove, 500);
-            } else {
-                endGame('DRAW');
+                document.getElementById('ttt-status').innerText = 'AI THINKING...';
+                setTimeout(aiMove, 400);
             }
         }
 
@@ -690,33 +658,19 @@ Profile.__index = Profile
         }
 
         function aiMove() {
-            if(!gameActive && !board.includes('')) return;
-            
             let bestScore = -Infinity;
             let move;
-            
             for(let i=0; i<9; i++) {
                 if(board[i] === '') {
                     board[i] = ai;
                     let score = minimax(board, 0, false);
                     board[i] = '';
-                    if(score > bestScore) {
-                        bestScore = score;
-                        move = i;
-                    }
+                    if(score > bestScore) { bestScore = score; move = i; }
                 }
             }
-            
             makeMove(move, ai);
             gameActive = true;
-            
-            if (checkWin(board, ai)) {
-                endGame('AI WINS');
-            } else if (!board.includes('')) {
-                endGame('DRAW');
-            } else {
-                document.getElementById('ttt-status').innerText = 'YOUR TURN (X)';
-            }
+            checkGameEnd(ai);
         }
 
         function minimax(board, depth, isMaximizing) {
@@ -749,62 +703,117 @@ Profile.__index = Profile
             }
         }
 
-        function checkWin(currentBoard, symbol) {
-            return winConditions.some(combination => {
-                return combination.every(index => {
-                    return currentBoard[index] === symbol;
-                });
-            });
+        function checkWin(b, s) {
+            const wins = [[0,1,2], [3,4,5], [6,7,8], [0,3,6], [1,4,7], [2,5,8], [0,4,8], [2,4,6]];
+            return wins.some(w => w.every(i => b[i] === s));
         }
 
-        function endGame(message) {
+        function checkGameEnd(turnPlayer) {
+            if (checkWin(board, turnPlayer)) {
+                endGame(turnPlayer === player ? 'YOU WON!' : 'AI WINS');
+                return true;
+            } else if (!board.includes('')) {
+                endGame('DRAW');
+                return true;
+            }
+            document.getElementById('ttt-status').innerText = turnPlayer === player ? 'AI THINKING...' : 'YOUR TURN (X)';
+            return false;
+        }
+
+        function endGame(msg) {
             gameActive = false;
-            document.getElementById('ttt-status').innerText = message;
+            document.getElementById('ttt-status').innerText = msg;
             document.getElementById('ttt-reset').classList.remove('hidden');
         }
-        
         window.resetTTT = initTTT;
 
 
         const sCanvas = document.getElementById('snake-game');
         const sCtx = sCanvas.getContext('2d');
-        const gridSize = 15; 
         const tileCount = 20;
+
+        let gridSize = sCanvas.width / tileCount; 
+        
         let snake = [];
         let food = {x: 15, y: 15};
-        let dx = 0;
-        let dy = 0;
+        let velocity = {x: 0, y: 0};
         let score = 0;
-        let gameInterval;
         let isSnakeRunning = false;
+        let lastGameTime = 0;
+        let snakeSpeed = 100;
+        
+        let inputQueue = [];
 
         function startSnake() {
             document.getElementById('snake-overlay').classList.add('hidden');
-            snake = [{x: 10, y: 10}];
+            snake = [{x: 10, y: 10}, {x:9, y:10}, {x:8, y:10}];
             score = 0;
-            dx = 1; 
-            dy = 0;
+            velocity = {x: 1, y: 0};
+            inputQueue = [];
             document.getElementById('snake-score-display').innerText = score;
-            if (gameInterval) clearInterval(gameInterval);
-            isSnakeRunning = true;
-            gameInterval = setInterval(gameLoop, 100);
             
-            window.addEventListener('keydown', changeDirection);
+            if (!isSnakeRunning) {
+                isSnakeRunning = true;
+                requestAnimationFrame(snakeLoop);
+            }
+            window.addEventListener('keydown', handleKeyInput);
         }
 
         function stopSnake() {
-            clearInterval(gameInterval);
             isSnakeRunning = false;
+            window.removeEventListener('keydown', handleKeyInput);
         }
 
-        function gameLoop() {
-            if(!isSnakeRunning) return;
-            
-            const head = {x: snake[0].x + dx, y: snake[0].y + dy};
+        function snakeLoop(timestamp) {
+            if (!isSnakeRunning) return;
+            requestAnimationFrame(snakeLoop);
 
-            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount || snake.some(s => s.x === head.x && s.y === head.y)) {
-                gameOver();
-                return;
+            if (timestamp - lastGameTime < snakeSpeed) return;
+            lastGameTime = timestamp;
+
+            updateSnake();
+            drawSnake();
+        }
+
+        function handleKeyInput(e) {
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(e.code) > -1) {
+                e.preventDefault();
+            }
+            const key = e.key;
+            const lastInput = inputQueue.length > 0 ? inputQueue[inputQueue.length - 1] : null;
+            
+            if (lastInput !== key) {
+                inputQueue.push(key);
+            }
+        }
+
+        function processInput() {
+            if (inputQueue.length === 0) return;
+
+            const key = inputQueue.shift();
+            
+            const up = velocity.y === -1;
+            const down = velocity.y === 1;
+            const left = velocity.x === -1;
+            const right = velocity.x === 1;
+
+            if (key === 'ArrowUp' && !down) velocity = {x: 0, y: -1};
+            if (key === 'ArrowDown' && !up) velocity = {x: 0, y: 1};
+            if (key === 'ArrowLeft' && !right) velocity = {x: -1, y: 0};
+            if (key === 'ArrowRight' && !left) velocity = {x: 1, y: 0};
+        }
+
+        function updateSnake() {
+            processInput();
+
+            const head = {x: snake[0].x + velocity.x, y: snake[0].y + velocity.y};
+
+            if (head.x < 0 || head.x >= tileCount || head.y < 0 || head.y >= tileCount) {
+                return gameOver();
+            }
+            
+            if (snake.some(s => s.x === head.x && s.y === head.y)) {
+                return gameOver();
             }
 
             snake.unshift(head);
@@ -813,11 +822,10 @@ Profile.__index = Profile
                 score += 10;
                 document.getElementById('snake-score-display').innerText = score;
                 placeFood();
+                if(snakeSpeed > 50) snakeSpeed -= 1;
             } else {
                 snake.pop();
             }
-
-            drawSnake();
         }
 
         function drawSnake() {
@@ -825,11 +833,19 @@ Profile.__index = Profile
             sCtx.fillRect(0, 0, sCanvas.width, sCanvas.height);
 
             sCtx.fillStyle = '#ff0055';
-            sCtx.fillRect(food.x * gridSize, food.y * gridSize, gridSize - 2, gridSize - 2);
+            sCtx.shadowBlur = 10;
+            sCtx.shadowColor = '#ff0055';
+            sCtx.fillRect(food.x * gridSize + 1, food.y * gridSize + 1, gridSize - 2, gridSize - 2);
+            sCtx.shadowBlur = 0;
 
             sCtx.fillStyle = '#00ff66';
-            snake.forEach(part => {
-                sCtx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 2, gridSize - 2);
+            snake.forEach((part, index) => {
+                if(index === 0) {
+                   sCtx.fillStyle = '#ccffdd';
+                } else {
+                   sCtx.fillStyle = '#00ff66';
+                }
+                sCtx.fillRect(part.x * gridSize, part.y * gridSize, gridSize - 1, gridSize - 1);
             });
         }
 
@@ -841,22 +857,14 @@ Profile.__index = Profile
             if (snake.some(s => s.x === food.x && s.y === food.y)) placeFood();
         }
 
-        function changeDirection(e) {
-            const key = e.key;
-            if (key === 'ArrowUp' && dy === 0) { dx = 0; dy = -1; }
-            if (key === 'ArrowDown' && dy === 0) { dx = 0; dy = 1; }
-            if (key === 'ArrowLeft' && dx === 0) { dx = -1; dy = 0; }
-            if (key === 'ArrowRight' && dx === 0) { dx = 1; dy = 0; }
-        }
-
-        function handleMobileControl(key) {
-            changeDirection({key: key});
+        function handleMobileControl(key, e) {
+            if(e) e.preventDefault();
+            inputQueue.push(key);
         }
 
         function gameOver() {
             stopSnake();
             document.getElementById('snake-overlay').classList.remove('hidden');
-            window.removeEventListener('keydown', changeDirection);
         }
     </script>
 </body>
